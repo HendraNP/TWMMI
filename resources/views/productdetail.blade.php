@@ -24,11 +24,8 @@
 
         </div>
         <div class="mt-12">
-            <p class="text-md text-gray-800 italic mt-4">
-                * Produk ini tersedia dalam berbagai 3 ukuran, yaitu 1kg, 5kg dan 25kg.
-            </p>
-            <p class="text-md text-gray-800 italic mt-4">
-            * Mohon menghubungi distributor terdekat untuk informasi harga dan ketersediaan produk.
+            <p class="text-xl text-gray-800 italic mt-4">
+                * Produk ini tersedia dalam 3 ukuran, yaitu 1kg, 5kg dan 25kg.
             </p>
     </div>
 </section>
