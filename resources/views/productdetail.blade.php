@@ -7,7 +7,7 @@
 
         <div class="flex flex-col md:flex-row gap-8 items-start">
             <div class="w-full md:w-1/2">
-                <img src="{{ asset('images/'.$product['image'])}}" alt="{{ $product['product_name'] }}" class="rounded shadow-md w-full object-contain">
+                <img src="{{ asset($product['image'])}}" alt="{{ $product['product_name'] }}" class="rounded shadow-md w-full object-contain">
             </div>
 
             <div class="w-full md:w-1/2">
@@ -23,10 +23,12 @@
             </div>
 
         </div>
+        @if ($product['product_brand'] != 'other')
         <div class="mt-12">
             <p class="text-xl text-gray-800 italic mt-4">
                 * Produk ini tersedia dalam 3 ukuran, yaitu 1kg, 5kg dan 25kg.
             </p>
-    </div>
+        </div>
+        @endif
 </section>
 @endsection
