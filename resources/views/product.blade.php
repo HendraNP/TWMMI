@@ -67,7 +67,7 @@
             @foreach ($other as $item)
             <a href="{{ url('/product/'.$item['product_code']) }}" class="block">
                 <div class="bg-white border rounded-lg shadow-md p-4 text-center">
-                    <img src="{{ asset('images/'.$item['image'])}}" alt="{{ $item['product_name'] }}" class="h-40 mx-auto mb-4 object-contain" />
+                    <img src="{{ asset($item['image'])}}" alt="{{ $item['product_name'] }}" class="h-40 mx-auto mb-4 object-contain" />
                     <p class="text-sm font-semibold text-gray-800 uppercase">{{ $item['product_name'] }}</p>
                 </div>
                 </a>
