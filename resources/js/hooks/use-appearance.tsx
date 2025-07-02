@@ -53,20 +53,21 @@ export function useAppearance() {
   const [appearance, setAppearance] = useState<Appearance>('system');
 
   const updateAppearance = useCallback((mode: Appearance) => {
-    setAppearance(mode);
+  setAppearance(mode);
 
-    if (isClient) {
-      localStorage.setItem('appearance', mode);
-      document.cookie = `appearance=${mode}; path=/; max-age=${365 * 24 * 60 * 60}`;
+  if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+    localStorage.setItem('appearance', mode);
+    document.cookie = `appearance=${mode}; path=/; max-age=${365 * 24 * 60 * 60}`;
 
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const isDark = mode === 'dark' || (mode === 'system' && prefersDark);
-      document.documentElement.classList.toggle('dark', isDark);
-    }
-  }, [isClient]);
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isDark = mode === 'dark' || (mode === 'system' && prefersDark);
+    document.documentElement.classList.toggle('dark', isDark);
+  }
+}, []);
+
 
   useEffect(() => {
-    if (!isClient) return;
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
 
     const saved = (localStorage.getItem('appearance') as Appearance) || 'system';
     updateAppearance(saved);
@@ -76,7 +77,8 @@ export function useAppearance() {
     media.addEventListener('change', handler);
 
     return () => media.removeEventListener('change', handler);
-  }, [updateAppearance]);
+    }, [updateAppearance]);
+
 
   return { appearance, updateAppearance } as const;
 }

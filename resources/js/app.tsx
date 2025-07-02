@@ -19,9 +19,7 @@ createInertiaApp({
 
     // Run client-only theme logic safely after hydration
     if (typeof window !== 'undefined') {
-        import('./hooks/use-appearance').then(({ initializeTheme }) => {
             initializeTheme();
-        });
     }
 },
     progress: {
