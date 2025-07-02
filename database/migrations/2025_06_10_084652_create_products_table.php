@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('product_id')->unique();
+            $table->string('product_code')->unique();
             $table->string('product_name');
-            $table->string('function')->nullable();
-            $table->string('colour')->nullable();
-            $table->string('invoice_product_name')->nullable();
+            $table->string('product_type');
+            $table->text('description')->nullable();
+            $table->string('image')->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users');
+            $table->foreignId('updated_by')->nullable()->constrained('users');  
             $table->timestamps();
         });
     }
@@ -29,4 +31,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('products');
     }
+
+// Removed Eloquent model events from migration; migrations should only define schema changes.
 };

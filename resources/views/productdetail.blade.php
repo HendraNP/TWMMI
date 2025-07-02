@@ -17,7 +17,7 @@
                 <div class="mt-6">
                     <h3 class="font-semibold mb-2 text-gray-700">Product Description</h3>
                     <p class="text-gray-600 text-sm leading-relaxed">
-                        {!! $product['description'] !!}   
+                        {!! nl2br($product['description']) !!}   
                     </p>
                 </div>
             </div>

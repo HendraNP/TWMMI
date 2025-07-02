@@ -46,10 +46,12 @@
                     <div>
                         <label for="message" class="block font-medium text-sm text-gray-700">Pesan</label>
                         <textarea name="message" id="message" rows="4" class="w-full mt-1 p-2 border rounded" required></textarea>
+                        <p id="wordCount">0/50 kata</p>
                     </div>
                     <div class="text-right">
-                        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">Kirim</button>
+                        <button type="submit" id="submitBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition" disabled>Kirim</button>
                     </div>
+                    {{ session('success') }}
                 </form>
             </div>
 
@@ -57,3 +59,26 @@
     </div>
 </section>
 @endsection
+
+
+@push('scripts')
+    <!-- Load jQuery from CDN if not already loaded -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#message').on('keypress', function () {
+                let words = $(this).val().trim().split(/\s+/);
+                let filtered = words.filter(w => w.length > 0);
+                let count = filtered.length;
+
+                if (count > 50) {
+                    $(this).val(filtered.slice(0, 50).join(" "));
+                    count = 50;
+                }
+
+                $('#wordCount').text(count + "/50 kata");
+                $('#submitBtn').prop('disabled', count <= 3 || count > 50);
+            });
+        });
+    </script>
+@endpush

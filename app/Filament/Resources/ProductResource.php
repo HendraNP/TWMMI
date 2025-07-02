@@ -13,31 +13,14 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Select;
-use App\Models\Colour;
 use App\Models\FunctionType;
-use function Livewire\before;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Illuminate\Support\Str;
 
 class ProductResource extends Resource
 {
-    private static function generateInvoiceProductName(?string $productName, ?string $functionCode, ?string $colourId): string
-    {
-        $productName = preg_replace('/[\x{4e00}-\x{9fff}]+/u', '', $productName ?? '');
-        // Remove any word that contains Grade A, B, C, D, or E (case-insensitive)
-        $productName = preg_replace('/\b\w*Grade\s*[ABCDE]\w*\b/i', '', $productName);
-        $productName = trim($productName);
-
-        $colour = Colour::find($colourId);
-        $colourName = $colour?->colour_name ?? '';
-        $colourName = preg_replace('/[\x{4e00}-\x{9fff}]+/u', '', $colourName);
-        $colourName = trim($colourName);
-
-        $function = FunctionType::where('function_code', $functionCode)->first();
-        $functionName = $function?->function_name ?? '';
-        $functionName = preg_replace('/[\x{4e00}-\x{9fff}]+/u', '', $functionName);
-        $functionName = trim($functionName);
-
-        return strtoupper($productName . ' ' . $functionName . ' ' . $colourName);
-    }
     protected static ?string $model = Product::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -46,24 +29,16 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('product_id')
-                    ->label('Product ID')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('product_name')
+                TextInput::make('product_name')
                     ->label('Product Name')
                     ->required()
-                    ->afterStateUpdated(function (callable $set, $get) {
-                        $set('invoice_product_name', self::generateInvoiceProductName(
-                            $get('product_name'),
-                            $get('function'),
-                            $get('colour')
-                        ));
-                    })
                     ->maxLength(255),
-                Forms\Components\Hidden::make('invoice_product_name'),
-                Select::make('function')
-                    ->label('Function')
+                TextInput::make('product_code')
+                    ->label('Product Code')
+                    ->required()
+                    ->maxLength(255),
+                Select::make('product_type')
+                    ->label('Tipe')
                     ->required()
                     ->options([
                         '2-1' => '2 IN 1 2合1',
@@ -74,28 +49,61 @@ class ProductResource extends Resource
                         'primer2-1' => 'PRIMER  2 IN 1 二合一妝前乳',
                         'primer' => 'PRIMER  基本的',
                         'topcoat' => 'TOP COAT 面漆',
+                        ''=> '',
                     ])
-                    ->afterStateUpdated(function (callable $set, $get) {
-                        $set('invoice_product_name', self::generateInvoiceProductName(
-                            $get('product_name'),
-                            $get('function'),
-                            $get('colour')
-                        ));
-                    })
                     ->searchable(),
-                Select::make('colour')
-                    ->label('Colour')
+                Select::make('product_brand')
+                    ->label('Brand')
                     ->required()
-                    ->getSearchResultsUsing(fn (string $search): array => Colour::where('colour_name', 'like', "%{$search}%")->limit(50)->pluck(column: 'colour_name', key: 'id')->toArray())
-                    ->getOptionLabelUsing(fn ($value): ?string => Colour::find(id: $value)?->colour_name)
-                    ->afterStateUpdated(function (callable $set, $get) {
-                        $set('invoice_product_name', self::generateInvoiceProductName(
-                            $get('product_name'),
-                            $get('function'),
-                            $get('colour')
-                        ));
+                    ->options([
+                        'CM Paint' => 'CM Paint',
+                        'MM Paint' => 'MM Paint',
+                        'Other' => 'Other',
+                    ]),
+                Select::make('product_usage')
+                    ->label('Kegunaan')
+                    ->required()
+                    ->options([
+                        'dinding' => 'Cat Dinding',
+                        'epoxy' => 'Cat Epoxy',
+                        'antikorosi' => 'Cat Anti Korosi',
+                        'other' => 'Lain-lain'
+                    ]),
+                TextInput::make('msrp1kg')
+                    ->label('Harga 1kg')
+                    ->numeric()
+                    ->minValue(0)
+                    ->placeholder('Enter a number'),
+                TextInput::make('msrp5kg')
+                    ->label('Harga 5kg')
+                    ->numeric()
+                    ->minValue(0)
+                    ->placeholder('Enter a number'),
+                TextInput::make('msrp25kg')
+                    ->label('Harga 25kg')
+                    ->numeric()
+                    ->minValue(0)
+                    ->placeholder('Enter a number'),
+                Textarea::make('description')
+                    ->label('Description')
+                    ->rows(10)
+                    ->required()
+                    ->maxLength(5000)
+                    ->placeholder('Deskripsi Produk'),
+                FileUpload::make('image')
+                    ->label('Product Image')
+                    ->image()
+                    ->imagePreviewHeight('150')
+                    ->disk('custom_public') // We'll define this disk below
+                    ->directory('images')   // Final path: public/images/
+                    ->visibility('public')
+                    ->maxSize(2048)
+                    ->getUploadedFileNameForStorageUsing(function ($file, $record): string {
+                        $slug = Str::slug($record->product_name); // slugify for safe filenames
+                        $ext = $file->getClientOriginalExtension();
+
+                        return "{$slug}.{$ext}"; // e.g., 'anti-karat-hardener.png'
                     })
-                    ->searchable(),
             ]);
     }
 
@@ -103,27 +111,8 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('product_id')
-                    ->label('Product ID')->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('product_name')
                     ->label('Product Name')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('function')
-                    ->label('Function')
-                    ->formatStateUsing(function ($state) {
-                        $function = FunctionType::where('function_code', $state)->first();
-                        return $function?->function_name ?? $state;
-                    }),
-                Tables\Columns\TextColumn::make('colour')
-                    ->label('Colour')
-                    ->formatStateUsing(callback: function ($state) {
-                        $colour = Colour::find($state);
-                        return $colour?->colour_name ?? $state;
-                    })
-                    ->searchable()
-                    ->sortable()
-                ->label('Colour'),
-                Tables\Columns\TextColumn::make('invoice_product_name')
-                    ->label('Invoice Product Name'),
             ]) 
             ->filters([
                 //

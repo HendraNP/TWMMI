@@ -2,26 +2,27 @@
 
 namespace App\Policies;
 
-use App\Models\Product;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
+use Filament\Facades\Filament;
+use App\Models\UserMail;
 
-class ProductPolicy
+class UserMailPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return in_array(Filament::auth()->user()?->user_type, ['marketing', 'manager','admin']);
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Product $product): bool
+    public function view(User $user, User $model): bool
     {
-        return true;
+        return in_array(Filament::auth()->user()?->user_type, ['marketing', 'manager','admin']);
     }
 
     /**
@@ -29,21 +30,21 @@ class ProductPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return false;
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Product $product): bool
+    public function update(User $user, UserMail $model): bool
     {
-        return true;
+        return in_array(Filament::auth()->user()?->user_type, ['marketing', 'manager','admin']);
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Product $product): bool
+    public function delete(User $user, UserMail $model): bool
     {
         return false;
     }
@@ -51,7 +52,7 @@ class ProductPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Product $product): bool
+    public function restore(User $user, User $model): bool
     {
         return false;
     }
@@ -59,7 +60,7 @@ class ProductPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Product $product): bool
+    public function forceDelete(User $user, User $model): bool
     {
         return false;
     }

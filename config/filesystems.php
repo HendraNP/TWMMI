@@ -59,6 +59,13 @@ return [
             'throw' => false,
             'report' => false,
         ],
+		
+		'custom_public' => [
+			'driver' => 'local',
+			'root' => public_path(), // 👈 Saves directly into public/
+			'url' => env('APP_URL'),
+			'visibility' => 'public',
+		],
 
     ],
 

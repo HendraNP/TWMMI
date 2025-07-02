@@ -17,7 +17,7 @@
         <div class="md:w-1/2 flex flex-col md:items-end text-sm">
             <ul class="space-y-1 text-right">
                 <li><a href="/about" class="hover:underline">Home</a></li>
-                <li><a href="/catalog" class="hover:underline">Home</a></li>
+                <li><a href="/catalog" class="hover:underline">Catalog</a></li>
                 <li><a href="/features" class="hover:underline">Product</a></li>
                 <li><a href="/pricing" class="hover:underline">About Us</a></li>
             </ul>

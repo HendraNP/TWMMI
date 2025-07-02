@@ -13,18 +13,18 @@ createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => resolvePageComponent(`./pages/${name}.tsx`, import.meta.glob('./pages/**/*.tsx')),
     setup({ el, App, props }) {
-        const root = createRoot(el);
+    const root = createRoot(el);
 
-        root.render(
-            <>
-            <App {...props} />
-            </>
-        );
-    },
+    root.render(<App {...props} />);
+
+    // Run client-only theme logic safely after hydration
+    if (typeof window !== 'undefined') {
+        import('./hooks/use-appearance').then(({ initializeTheme }) => {
+            initializeTheme();
+        });
+    }
+},
     progress: {
         color: '#4B5563',
     },
 });
-
-// This will set light / dark mode on load...
-initializeTheme();

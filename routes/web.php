@@ -52,3 +52,16 @@ Route::get('/catalog/{tipe}', function ($tipe) {
 Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
+
+
+Route::post('/contact', function (\Illuminate\Http\Request $request) {
+    $data = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'message' => 'required|string|max:5000',
+    ]);
+
+    \App\Models\UserMail::create($data);
+
+    return redirect()->back()->with('success', 'Pesan Anda telah kami terima!');
+})->name('contact.store');

@@ -48,26 +48,35 @@ export function initializeTheme() {
 }
 
 export function useAppearance() {
-    const [appearance, setAppearance] = useState<Appearance>('system');
+  const isClient = typeof window !== 'undefined' && typeof document !== 'undefined';
 
-    const updateAppearance = useCallback((mode: Appearance) => {
-        setAppearance(mode);
+  const [appearance, setAppearance] = useState<Appearance>('system');
 
-        // Store in localStorage for client-side persistence...
-        localStorage.setItem('appearance', mode);
+  const updateAppearance = useCallback((mode: Appearance) => {
+    setAppearance(mode);
 
-        // Store in cookie for SSR...
-        setCookie('appearance', mode);
+    if (isClient) {
+      localStorage.setItem('appearance', mode);
+      document.cookie = `appearance=${mode}; path=/; max-age=${365 * 24 * 60 * 60}`;
 
-        applyTheme(mode);
-    }, []);
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDark = mode === 'dark' || (mode === 'system' && prefersDark);
+      document.documentElement.classList.toggle('dark', isDark);
+    }
+  }, [isClient]);
 
-    useEffect(() => {
-        const savedAppearance = localStorage.getItem('appearance') as Appearance | null;
-        updateAppearance(savedAppearance || 'system');
+  useEffect(() => {
+    if (!isClient) return;
 
-        return () => mediaQuery()?.removeEventListener('change', handleSystemThemeChange);
-    }, [updateAppearance]);
+    const saved = (localStorage.getItem('appearance') as Appearance) || 'system';
+    updateAppearance(saved);
 
-    return { appearance, updateAppearance } as const;
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const handler = () => updateAppearance(saved);
+    media.addEventListener('change', handler);
+
+    return () => media.removeEventListener('change', handler);
+  }, [updateAppearance]);
+
+  return { appearance, updateAppearance } as const;
 }

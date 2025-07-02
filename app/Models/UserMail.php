@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ColourCatalog extends Model
+class UserMail extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -12,11 +12,14 @@ class ColourCatalog extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'colour_name',
-        'colour_code',
-        'hex_code',
-        'type'
+        'product_name',
+        'product_code',
+        'image',
+        'flag',
+        'reply',
+        'replied_by',
     ];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -26,14 +29,8 @@ class ColourCatalog extends Model
     protected $hidden = [
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-        ];
-    }
+    public function repliedBy()
+{
+    return $this->belongsTo(User::class, 'replied_by');
+}
 }

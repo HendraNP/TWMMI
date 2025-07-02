@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Product extends Model
+class ColourProduct extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -18,15 +18,12 @@ class Product extends Model
         'image'
     ];
 
-    protected $primaryKey = 'product_id';
-
     /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>
      */
     protected $hidden = [
-        'product_id',
         'password',
         'remember_token',
     ];
