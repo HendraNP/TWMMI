@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Traits\TracksUserstamps;
 use App\Traits\LogsModelHistory;
 
-class ColourProduct extends Model
+class Customer extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -15,10 +15,15 @@ class ColourProduct extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'product_name',
-        'product_type',
-        'product_brand',
-        'image'
+        'customer_no',
+        'customer_name',
+        'office_address',
+        'delivery_address',
+        'sales_id',
+        'pic', // Person in Charge
+        'telp_no',
+        'email',
+        'npwp', // NPWP 16-digit Indonesian Tax ID
     ];
 
     /**
@@ -44,5 +49,21 @@ class ColourProduct extends Model
         ];
     }
 
+    public function sales()
+    {
+        return $this->belongsTo(User::class, 'sales_id');
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
     use HasUserstamps, LogsModelHistory, TracksUserstamps;
+
 }

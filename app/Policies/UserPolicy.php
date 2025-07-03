@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
+use Filament\Facades\Filament;
 
 class UserPolicy
 {
@@ -12,7 +13,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return Filament::auth()->user()?->user_type === 'admin';
     }
 
     /**
@@ -20,7 +21,12 @@ class UserPolicy
      */
     public function view(User $user, user $model): bool
     {
-        return false;
+        return Filament::auth()->user()?->user_type === 'admin';
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Filament::auth()->user()?->user_type === 'admin';
     }
 
     /**
@@ -28,7 +34,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return Filament::auth()->user()?->user_type === 'admin';
     }
 
     /**
@@ -36,7 +42,7 @@ class UserPolicy
      */
     public function update(User $user, user $model): bool
     {
-        return false;
+        return Filament::auth()->user()?->user_type === 'admin';
     }
 
     /**

@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('user_type')->default('user'); // Default user type
             $table->rememberToken();
             $table->timestamps();
+            $table->foreignId('created_by')->constrained('users');
+            $table->foreignId('updated_by')->constrained('users');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

@@ -3,6 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\TracksUserstamps;
+use App\Traits\HasUserstamps;
+use App\Traits\LogsModelHistory;
+
 
 class Product extends Model
 {
@@ -43,4 +47,6 @@ class Product extends Model
             'password' => 'hashed',
         ];
     }
+
+    use HasUserstamps, LogsModelHistory, TracksUserstamps;
 }

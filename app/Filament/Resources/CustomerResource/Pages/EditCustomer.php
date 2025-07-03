@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\Resources\ProductResource\Pages;
+namespace App\Filament\Resources\CustomerResource\Pages;
 
-use App\Filament\Resources\ProductResource;
+use App\Filament\Resources\CustomerResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Traits\HasViewHistoryAction;
 
-class EditProduct extends EditRecord
+class EditCustomer extends EditRecord
 {
-    protected static string $resource = ProductResource::class;
+    protected static string $resource = CustomerResource::class;
 
     use HasViewHistoryAction;
 
@@ -17,7 +17,8 @@ class EditProduct extends EditRecord
     {
         return [
             Actions\DeleteAction::make(),
-             $this->getViewHistoryAction(), // Add the view history action
+            $this->getViewHistoryAction(), // Add the view history action
         ];
     }
+
 }

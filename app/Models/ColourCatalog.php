@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasUserstamps;
+use App\Traits\TracksUserstamps;
+use App\Traits\LogsModelHistory;
 
 class ColourCatalog extends Model
 {
@@ -36,4 +39,6 @@ class ColourCatalog extends Model
         return [
         ];
     }
+
+    use HasUserstamps, LogsModelHistory, TracksUserstamps;
 }

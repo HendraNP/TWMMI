@@ -3,6 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasUserstamps;
+use App\Traits\TracksUserstamps;
+use App\Traits\LogsModelHistory;
+
 
 class Colour extends Model
 {
@@ -38,4 +42,6 @@ class Colour extends Model
     {
         return $this->colour_name.' '.$this->mandarin_name;
     }
+
+    use HasUserstamps, LogsModelHistory, TracksUserstamps;
 }

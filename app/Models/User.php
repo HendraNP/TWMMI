@@ -6,6 +6,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Traits\TracksUserstamps;
+use App\Traits\HasUserstamps;
+use App\Traits\LogsModelHistory;
+
 
 class User extends Authenticatable
 {
@@ -45,4 +49,6 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    use HasUserstamps, LogsModelHistory, TracksUserstamps;
 }
