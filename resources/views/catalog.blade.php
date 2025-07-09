@@ -1,8 +1,19 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    $routeTipe = request()->route('tipe');
+
+    $typeMap = [
+        'dinding' => 'Cat Dinding',
+        'epoxy' => 'Cat Epoxy',
+        'antikorosi' => 'Cat Anti Korosi',
+    ];
+
+    $typeLabel = $typeMap[$routeTipe];
+@endphp
 <div class="max-w-screen-xl mx-auto px-4 py-8">
-        <h1 class="text-2xl font-bold mb-6 text-center">🎨 Katalog Warna {{ ($colors[0]['type'] == 'dinding') ? 'Cat Dinding' : 'Cat Epoxy & Anti Korosi'}} Merah Matahari 🎨 </h1>
+        <h1 class="text-2xl font-bold mb-6 text-center">🎨 Katalog Warna {{ $typeLabel }} Merah Matahari 🎨 </h1>
         @php
             $file = ($colors[0]['type'] == 'dinding')
             ? 'Katalog Warna Cat Dinding Merah Matahari.pdf'
@@ -12,7 +23,7 @@
         class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-base font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition">
         📥 Download Color Catalog
         </a>
-
+        
         <div
             class="h-auto overflow-x-auto overflow-y-hidden px-4 py-6 custom-scroll relative whitespace-nowrap"
             x-data

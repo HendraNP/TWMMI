@@ -16,5 +16,7 @@
 
     {{-- Optional footer --}}
     @include('partials.footer')
+
+    <div id="popup-root"></div> {{-- Portal target for Alpine x-teleport --}}
 </body>
 </html>

@@ -30,6 +30,11 @@ class InvoiceResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with('customer');
+    }
+
     public static function form(Form $form): Form
 {
     return $form->schema([
@@ -70,19 +75,32 @@ class InvoiceResource extends Resource
                     ->required()
                     ->reactive()
                     ->afterStateUpdated(function ($state, callable $set) {
-                        $customer = \App\Models\Customer::find($state);
+                        $customer = Customer::find($state);
 
                         if ($customer) {
                             $set('customer_npwp', $customer->npwp);
                             $set('office_address', $customer->office_address);
                             $set('delivery_address', $customer->delivery_address);
-                            // Add more if needed: salesperson_id, etc.
                         }
                     }),
                 
-                TextInput::make('customer_npwp')->label('NPWP')->disabled(),
-                Textarea::make('office_address')->label('Office Address')->disabled()->rows(3),
-                Textarea::make('delivery_address')->label('Delivery Address')->disabled()->rows(3),
+                TextInput::make('customer_npwp')
+                    ->label('NPWP')
+                    ->disabled()
+                    ->afterStateHydrated(fn ($set, $record) => $set('customer_npwp', $record?->customer?->npwp)),
+
+                Textarea::make('office_address')
+                    ->label('Office Address')
+                    ->disabled()
+                    ->rows(3)
+                    ->afterStateHydrated(fn ($set, $record) => $set('office_address', $record?->customer?->office_address)),
+
+                Textarea::make('delivery_address')
+                    ->label('Delivery Address')
+                    ->disabled()
+                    ->rows(3)
+                    ->afterStateHydrated(fn ($set, $record) => $set('delivery_address   ', $record?->customer?->delivery_address)),
+
                 TextInput::make('salesperson_id')->visible(false),
 
                 DatePicker::make('shipping_date')
@@ -221,6 +239,8 @@ class InvoiceResource extends Resource
                     ->label('Terbilang')
                     ->autosize(false)
                     ->rows(2)
+                    ->disabled()
+                    ->dehydrated(false),
             ])
             ->columns(2),
     ]);
@@ -233,7 +253,7 @@ class InvoiceResource extends Resource
             ->columns([
                 TextColumn::make('invoice_number')->searchable()->sortable(),
                 TextColumn::make('invoice_date')->date()->sortable(),
-                TextColumn::make('customer_name')->searchable()->sortable(),
+                TextColumn::make('customer.customer_name')->searchable()->sortable(),
                 TextColumn::make('grand_total')->money('IDR'),
             ])
             ->filters([

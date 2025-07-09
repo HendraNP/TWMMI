@@ -45,6 +45,9 @@ Route::get('/product/{slug}', function ($slug) {
 use App\Models\Color;
 
 Route::get('/catalog/{tipe}', function ($tipe) {
+    if($tipe == 'antikorosi'){
+        $tipe = 'epoxy';
+    }
     $colors = ColourCatalog::where('type','=',$tipe)->orderBy('id')->get();
     return view('catalog', compact('colors'));
 });

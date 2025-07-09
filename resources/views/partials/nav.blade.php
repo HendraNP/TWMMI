@@ -22,7 +22,10 @@
                         <a href="{{ url('/catalog/dinding') }}" class="block px-4 py-2 hover:bg-gray-100 transition">Cat Dinding</a>
                     </li>
                     <li>
-                        <a href="{{ url('/catalog/epoxy') }}" class="block px-4 py-2 hover:bg-gray-100 transition">Cat Epoxy & Anti Korosi</a>
+                        <a href="{{ url('/catalog/epoxy') }}" class="block px-4 py-2 hover:bg-gray-100 transition">Cat Epoxy</a>
+                    </li>
+                    <li>
+                        <a href="{{ url('/catalog/antikorosi') }}" class="block px-4 py-2 hover:bg-gray-100 transition">Cat Anti Korosi</a>
                     </li>
                 </ul>
             </li>

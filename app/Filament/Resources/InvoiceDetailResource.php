@@ -32,26 +32,39 @@ class InvoiceDetailResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('invoice.invoice_number')->label('Invoice'),
-                TextColumn::make('part_name')->searchable(),
-                TextColumn::make('quantity'),
-                TextColumn::make('unit'),
-                TextColumn::make('price')->money('IDR'),
-                TextColumn::make('discount'),
-                TextColumn::make('sj_number'),
+                TextColumn::make('invoice.invoice_number')
+                    ->label('Invoice No')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('colourProduct.invoice_product_name')
+                    ->label('Product')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('quantity')
+                    ->numeric()
+                    ->sortable(),
+
+                TextColumn::make('sj_number')
+                    ->label('SJ Number')
+                    ->searchable(),
+
+                TextColumn::make('productionJob.status')
+                    ->label('Status')
+                    ->badge()
+                    ->colors([
+                        'primary' => 'pending',
+                        'warning' => 'in_progress',
+                        'success' => 'finalized',
+                    ])
+                    ->sortable(),
             ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->defaultSort('created_at', 'desc')
+            ->actions([]) // 🔒 no edit/view/delete
+            ->bulkActions([]); // 🔒 no bulk delete;
     }
+
 
     public static function getRelations(): array
     {
@@ -64,8 +77,6 @@ class InvoiceDetailResource extends Resource
     {
         return [
             'index' => Pages\ListInvoiceDetails::route('/'),
-            'create' => Pages\CreateInvoiceDetail::route('/create'),
-            'edit' => Pages\EditInvoiceDetail::route('/{record}/edit'),
         ];
     }
 }
