@@ -39,7 +39,7 @@ class CustomerResource extends Resource
                 Textarea::make('delivery_address'),
                 BelongsToSelect::make('sales_id')
                     ->label('Sales')
-                    ->relationship('sales', 'name') // assumes User model has a 'name' column
+                    ->relationship('customer', 'name') // assumes User model has a 'name' column
                     ->searchable()
                     ->preload()
                     ->nullable(),

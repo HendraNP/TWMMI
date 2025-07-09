@@ -2,6 +2,7 @@
     <x-slot name="heading">Change History</x-slot>
 
     <div class="space-y-4">
+        <div>Create Time : {{ $record->created_at->diffForHumans() }}</div>
         @foreach ($record->histories as $history)
             @php
                 $beforeChanges = collect(\Illuminate\Support\Arr::except($history->before_changes ?? [], ['updated_at']))
@@ -12,7 +13,6 @@
             @endphp
 
             <div class="p-4 rounded-lg border">
-                <div><strong>Event:</strong> {{ ucfirst($history->event) }}</div>
                 <div><strong>User:</strong> {{ $history->user?->name ?? 'System' }}</div>
                 <div><strong>Time:</strong> 
                     <em class="text-xs text-gray-500 block">{{ $history->created_at->diffForHumans() }}</em>
